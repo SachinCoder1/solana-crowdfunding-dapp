@@ -6,7 +6,12 @@ declare_id!("EYH93EyjromEmPgJfp6918j7uMBMc1YKb41qVMbS5zst");
 pub mod crowdfunding_dapp {
     use super::*;
 
-    pub fn create(ctx: Context<Create>, name: String, Description: String) -> Result<()> {
+    pub fn create(ctx: Context<Create>, name: String, description: String) -> Result<()> {
+        let campaign = &mut ctx.accounts.campaign;
+        campaign.name = name;
+        campaign.description = description;
+        campaign.amount_donated = 0;
+        campaign.admin = *ctx.accounts.user.key;
         Ok(())
     }
 }
@@ -18,4 +23,13 @@ pub struct Create<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+
+#[account]
+pub struct Campaign {
+    pub admin: Pubkey,
+    pub name: String,
+    pub description: String,
+    amount_donated: u64
 }
